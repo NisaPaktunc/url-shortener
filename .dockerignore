@@ -1,0 +1,22 @@
+# Keep secrets, caches and development files out of the image.
+.env
+.env.*
+!.env.example
+.git
+.github
+.venv
+venv
+__pycache__
+*.py[cod]
+*.egg-info
+.pytest_cache
+.ruff_cache
+*.db
+*.sqlite
+*.sqlite3
+tests
+scripts
+README.md
+CLAUDE.md
+docker-compose.yml
+Dockerfile

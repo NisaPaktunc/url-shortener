@@ -1,0 +1,622 @@
+/* URL Shortener dashboard. Plain CSS, mobile first, light theme. */
+
+:root {
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --text: #1b1f24;
+  --muted: #5b6573;
+  --border: #e1e5ea;
+  --accent: #3b5bdb;
+  --accent-hover: #2f4ac0;
+  --accent-soft: #edf1ff;
+  --danger: #c92a2a;
+  --danger-soft: #fff0f0;
+  --success: #2b8a3e;
+  --success-soft: #ebfbee;
+  --radius: 12px;
+  --shadow: 0 1px 2px rgba(16, 24, 40, 0.06), 0 1px 3px rgba(16, 24, 40, 0.08);
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* The hidden attribute must always win over display rules below. */
+[hidden] {
+  display: none !important;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 1rem;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  line-height: 1.25;
+}
+
+h1 {
+  font-size: 1.5rem;
+}
+
+h2 {
+  font-size: 1.125rem;
+}
+
+p {
+  margin: 0;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+/* ---------- Cards and sections ---------- */
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+}
+
+.card > h2,
+.card-title {
+  margin-bottom: 12px;
+}
+
+.card-title {
+  font-size: 1rem;
+}
+
+.section {
+  margin-top: 24px;
+}
+
+.section > h2 {
+  margin-bottom: 12px;
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--bg);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #ffffff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+.btn-ghost {
+  background: transparent;
+}
+
+.btn-small {
+  min-height: 40px;
+  padding: 0 12px;
+  font-size: 0.9375rem;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---------- Forms ---------- */
+
+.field {
+  margin-bottom: 16px;
+}
+
+label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+
+label .muted {
+  font-weight: 400;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="url"],
+input[type="password"] {
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid #b8c0cc;
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 1rem; /* 16px stops iOS from zooming in */
+}
+
+input::placeholder {
+  color: #7b8696;
+}
+
+.hint {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.error,
+.success,
+.notice {
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 0.9375rem;
+}
+
+.error {
+  margin-bottom: 16px;
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.success {
+  margin-bottom: 16px;
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.notice {
+  margin-bottom: 16px;
+  background: var(--accent-soft);
+  color: var(--accent-hover);
+}
+
+/* ---------- Log in view ---------- */
+
+.auth {
+  display: flex;
+  justify-content: center;
+  padding-top: 8vh;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+}
+
+.auth-card h1 {
+  margin-bottom: 4px;
+}
+
+.auth-card .muted {
+  margin-bottom: 20px;
+}
+
+/* ---------- Segmented buttons (log in / register, 7 / 30 / 90 days) ---------- */
+
+.segmented {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  padding: 3px;
+  gap: 3px;
+}
+
+.auth-card .segmented {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.segment {
+  flex: 1;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.segment[aria-pressed="true"] {
+  background: var(--surface);
+  color: var(--accent);
+  box-shadow: var(--shadow);
+}
+
+/* ---------- Top bar ---------- */
+
+.topbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.topbar-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+#user-email {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 200px;
+}
+
+/* ---------- Create form ---------- */
+
+.create-form .form-message {
+  margin: 16px 0 0;
+}
+
+.create-actions {
+  margin-top: 4px;
+}
+
+.create-actions .btn {
+  width: 100%;
+}
+
+/* ---------- Links list ---------- */
+
+.links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.link-item {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+}
+
+.link-item[aria-current="true"] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.link-main {
+  min-width: 0; /* lets the long target URL shrink and show "..." */
+}
+
+.link-short {
+  font-weight: 700;
+  color: var(--accent);
+  overflow-wrap: anywhere;
+}
+
+.link-target {
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+
+.link-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.link-clicks {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.link-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.link-actions .btn {
+  flex: 1;
+}
+
+/* ---------- Statistics ---------- */
+
+.stats-head {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stats-heading h2 {
+  margin-bottom: 2px;
+}
+
+#stats-subtitle {
+  overflow-wrap: anywhere;
+  font-size: 0.9375rem;
+}
+
+.total {
+  margin-bottom: 16px;
+}
+
+.total strong {
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+.chart-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.chart-card {
+  margin: 0;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  min-width: 0; /* stops wide content from pushing the page sideways */
+}
+
+.chart-card figcaption {
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.chart-box {
+  position: relative;
+  height: 240px;
+}
+
+.chart-box-small {
+  height: 200px;
+}
+
+.legend {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+  font-size: 0.9375rem;
+}
+
+.legend li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend .swatch {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+.legend .legend-name {
+  flex: 1;
+}
+
+.legend .legend-value {
+  font-variant-numeric: tabular-nums;
+}
+
+.legend .legend-zero {
+  color: var(--muted);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+
+.table th,
+.table td {
+  padding: 8px 4px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.table th {
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.table .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  padding-left: 12px;
+}
+
+.table .referrer {
+  overflow-wrap: anywhere;
+}
+
+.note {
+  margin-top: 16px;
+  font-size: 0.875rem;
+}
+
+/* ---------- Empty, loading and error states ---------- */
+
+.state {
+  padding: 32px 16px;
+  text-align: center;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px dashed #b8c0cc;
+  border-radius: var(--radius);
+}
+
+.state.state-error {
+  color: var(--danger);
+  border-color: var(--danger);
+  background: var(--danger-soft);
+}
+
+.state .btn {
+  margin-top: 12px;
+}
+
+.state-title {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* A text field that is only used to copy text when the Clipboard API is missing. */
+.clipboard-fallback {
+  position: fixed;
+  top: 0;
+  left: -9999px;
+  opacity: 0;
+}
+
+/* ---------- Wider screens ---------- */
+
+@media (min-width: 640px) {
+  .container {
+    padding: 24px;
+  }
+
+  h1 {
+    font-size: 1.75rem;
+  }
+
+  .card {
+    padding: 24px;
+  }
+
+  .create-form {
+    display: grid;
+    grid-template-columns: 1fr 220px;
+    gap: 0 16px;
+    align-items: start;
+  }
+
+  .field-url {
+    grid-column: 1 / -1;
+  }
+
+  .create-actions {
+    grid-column: 1 / -1;
+  }
+
+  .create-actions .btn {
+    width: auto;
+    min-width: 140px;
+  }
+
+  .create-form .form-message {
+    grid-column: 1 / -1;
+  }
+
+  .link-item {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+  }
+
+  .link-actions .btn {
+    flex: none;
+  }
+
+  .stats-head {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .chart-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .chart-wide {
+    grid-column: 1 / -1;
+  }
+
+  .chart-box {
+    height: 280px;
+  }
+
+  #user-email {
+    max-width: 320px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

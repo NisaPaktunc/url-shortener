@@ -1,0 +1,51 @@
+# Starts the app and a Postgres database:
+#
+#   cp .env.example .env     # then set SECRET_KEY and POSTGRES_PASSWORD
+#   docker compose up --build
+#
+# The values come from your .env file. Compose stops with a message if one
+# of the required values is missing.
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: shortener
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in your .env file}
+      POSTGRES_DB: shortener
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shortener -d shortener"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy  # wait until Postgres accepts connections
+    environment:
+      DATABASE_URL: postgresql+psycopg://shortener:${POSTGRES_PASSWORD}@db:5432/shortener
+      SECRET_KEY: ${SECRET_KEY:?Set SECRET_KEY in your .env file}
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES:-30}
+    ports:
+      - "8000:8000"
+    healthcheck:
+      # The slim image has no curl, so use Python.
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3)"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+volumes:
+  pgdata:

@@ -1,0 +1,52 @@
+# Render Blueprint: the web service (built from the Dockerfile) and a Postgres
+# database. See "Deploy to Render" in README.md for the steps.
+#
+# Both start on the free plan. A free Postgres database expires 30 days after
+# it was created, so change `plan` for real use (see README.md).
+databases:
+  - name: urlshortener-db
+    databaseName: shortener
+    user: shortener
+    plan: free
+    region: frankfurt
+    postgresMajorVersion: "16"
+
+services:
+  - type: web
+    name: url-shortener
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: frankfurt
+    # Render waits for this answer before it sends traffic to a new version.
+    healthCheckPath: /health
+    autoDeployTrigger: commit
+    envVars:
+      # The address of the database above. docker/entrypoint.sh runs the
+      # migrations with it each time the service starts.
+      - key: DATABASE_URL
+        fromDatabase:
+          name: urlshortener-db
+          property: connectionString
+      # Render makes a random value once. It is never written in this file.
+      - key: SECRET_KEY
+        generateValue: true
+      # The app sits behind Render's proxy: trust its X-Forwarded-* headers,
+      # so short links start with https:// and rate limits see the client.
+      - key: FORWARDED_ALLOW_IPS
+        value: "*"
+      # How many proxies are in front of the app. Rate limits count from the
+      # right end of X-Forwarded-For, because the left side can be forged.
+      # If everybody seems to share one limit, try 2 (see README.md).
+      - key: TRUSTED_PROXY_HOPS
+        value: "1"
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "30"
+      - key: LOG_LEVEL
+        value: INFO
+      - key: RATE_LIMIT_ENABLED
+        value: "true"
+      - key: LOGIN_RATE_LIMIT
+        value: 5/minute
+      - key: CREATE_LINK_RATE_LIMIT
+        value: 30/minute

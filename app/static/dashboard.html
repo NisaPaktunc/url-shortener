@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>URL Shortener Dashboard</title>
+  <link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+<body>
+  <main id="app" class="container">
+    <noscript><p class="state">This dashboard needs JavaScript. Please turn it on and reload the page.</p></noscript>
+
+    <!-- Log in / create account -->
+    <section id="auth-view" class="auth" hidden>
+      <div class="card auth-card">
+        <h1>URL Shortener</h1>
+        <p class="muted">Short links with click statistics.</p>
+
+        <div class="segmented" role="group" aria-label="Log in or create an account">
+          <button type="button" class="segment mode-btn" data-mode="login" aria-pressed="true">Log in</button>
+          <button type="button" class="segment mode-btn" data-mode="register" aria-pressed="false">Create account</button>
+        </div>
+
+        <p id="auth-notice" class="notice" role="status" hidden></p>
+
+        <form id="auth-form" novalidate>
+          <div class="field">
+            <label for="auth-email">Email</label>
+            <input id="auth-email" name="email" type="email" autocomplete="email" inputmode="email" autocapitalize="off" required>
+          </div>
+          <div class="field">
+            <label for="auth-password">Password</label>
+            <input id="auth-password" name="password" type="password" autocomplete="current-password" required>
+            <p id="auth-hint" class="hint" hidden>Use 8 to 128 characters.</p>
+          </div>
+          <p id="auth-error" class="error" role="alert" hidden></p>
+          <button id="auth-submit" class="btn btn-primary btn-block" type="submit">Log in</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- The dashboard -->
+    <section id="dashboard-view" hidden>
+      <header class="topbar">
+        <h1>URL Shortener</h1>
+        <div class="topbar-user">
+          <span id="user-email" class="muted"></span>
+          <button id="logout-btn" class="btn btn-ghost" type="button">Log out</button>
+        </div>
+      </header>
+
+      <section class="card" aria-labelledby="create-title">
+        <h2 id="create-title">Create a short link</h2>
+        <form id="create-form" class="create-form" novalidate>
+          <div class="field field-url">
+            <label for="create-url">Web address</label>
+            <input id="create-url" name="url" type="url" inputmode="url" autocapitalize="off" autocomplete="off" placeholder="https://example.com/a/very/long/page" required>
+          </div>
+          <div class="field field-code">
+            <label for="create-code">Custom code <span class="muted">(optional)</span></label>
+            <input id="create-code" name="custom_code" type="text" autocomplete="off" autocapitalize="off" maxlength="32" placeholder="mycode" aria-describedby="create-code-hint">
+            <p id="create-code-hint" class="hint">3 to 32 letters or digits.</p>
+          </div>
+          <div class="create-actions">
+            <button id="create-submit" class="btn btn-primary" type="submit">Shorten</button>
+          </div>
+          <p id="create-error" class="error form-message" role="alert" hidden></p>
+          <p id="create-status" class="success form-message" role="status" hidden></p>
+        </form>
+      </section>
+
+      <section class="section" aria-labelledby="links-title">
+        <h2 id="links-title">Your links</h2>
+        <div id="links-state" class="state" role="status" hidden></div>
+        <ul id="links-list" class="links" hidden></ul>
+      </section>
+
+      <section id="stats-section" class="card section" aria-labelledby="stats-title" hidden>
+        <div class="stats-head">
+          <div class="stats-heading">
+            <h2 id="stats-title">Statistics</h2>
+            <p id="stats-subtitle" class="muted"></p>
+          </div>
+          <div class="segmented" role="group" aria-label="Time range">
+            <button type="button" class="segment range-btn" data-days="7" aria-pressed="false">7 days</button>
+            <button type="button" class="segment range-btn" data-days="30" aria-pressed="true">30 days</button>
+            <button type="button" class="segment range-btn" data-days="90" aria-pressed="false">90 days</button>
+          </div>
+        </div>
+
+        <div id="stats-state" class="state" role="status" hidden></div>
+
+        <div id="stats-content" hidden>
+          <p class="total"><strong id="stats-total">0</strong> <span id="stats-total-label">clicks</span> in the last <span id="stats-days">30</span> days</p>
+
+          <p id="charts-unavailable" class="state" hidden>Charts could not be loaded. Check your internet connection and reload the page.</p>
+
+          <div class="chart-grid">
+            <figure class="chart-card chart-wide" id="daily-card">
+              <figcaption>Clicks per day</figcaption>
+              <div class="chart-box"><canvas id="daily-chart" role="img" aria-label="Line chart of clicks per day"></canvas></div>
+            </figure>
+
+            <figure class="chart-card" id="device-card">
+              <figcaption>Devices</figcaption>
+              <div class="chart-box chart-box-small"><canvas id="device-chart" role="img" aria-label="Doughnut chart of clicks per device type"></canvas></div>
+              <ul id="device-legend" class="legend"></ul>
+            </figure>
+
+            <div class="chart-card">
+              <h3 class="card-title">Top referrers</h3>
+              <p id="referrers-empty" class="muted" hidden>No referrer data yet. Direct visits and apps that hide the referrer are not listed.</p>
+              <table id="referrers-table" class="table">
+                <thead><tr><th scope="col">Referrer</th><th scope="col" class="num">Clicks</th></tr></thead>
+                <tbody id="referrers-body"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <p class="muted note">Days are counted in UTC.</p>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <!-- Chart.js, pinned to one version and checked with an integrity hash -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.js" integrity="sha384-hfkuqrKeWFmnTMWN31VWyoe8xgdTADD11kgxmdpx2uyE6j5Az5uZq6u6AKYYmAOw" crossorigin="anonymous"></script>
+  <script type="module" src="/static/js/main.js"></script>
+</body>
+</html>
