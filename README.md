@@ -1,6 +1,6 @@
 # URL Shortener
 
-[![CI](https://github.com/OWNER/REPO/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/REPO/actions/workflows/ci.yml)
+[![CI](https://github.com/NisaPaktunc/url-shortener/actions/workflows/ci.yml/badge.svg)](https://github.com/NisaPaktunc/url-shortener/actions/workflows/ci.yml)
 
 A simple URL shortener with user accounts and click analytics, built with FastAPI.
 
@@ -585,7 +585,7 @@ GitHub Actions (`.github/workflows/ci.yml`) runs on every push and pull
 request with Python 3.12 and a pip cache: `ruff check`, `ruff format --check`
 and `pytest`. It needs no secrets. The workflow only has read access to the code.
 
-The badge at the top of this file uses `OWNER/REPO` as a placeholder. Replace
+The badge at the top of this file uses `NisaPaktunc/url-shortener` as a placeholder. Replace
 it with your GitHub user name and repository name.
 
 ## Roadmap
