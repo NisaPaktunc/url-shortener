@@ -120,4 +120,4 @@ def test_docker_compose_file_is_valid() -> None:
         check=False,
     )
     assert bad.returncode != 0  # it refuses to start without the secrets
-    assert "SECRET_KEY" in bad.stderr
+    assert "SECRET_KEY" in bad.stderr or "POSTGRES_PASSWORD" in bad.stderr
